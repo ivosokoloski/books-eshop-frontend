@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
-import type { Book } from '../../api/types/book.ts';
+import type { Book, BookFormData } from '../../api/types/book.ts';
 import bookApi from '../../api/booksApi.ts';
+
 const useBooks = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -20,11 +21,27 @@ const useBooks = () => {
     }
   }, []);
 
+  const onAdd = useCallback(async (data: BookFormData) => {
+    await bookApi.add(data);
+    await fetch();
+  }, [fetch]);
+
+  const onEdit = useCallback(async (id: number, data: BookFormData) => {
+    await bookApi.edit(id.toString(), data);
+    await fetch();
+  }, [fetch]);
+
+  const onDelete = useCallback(async (id: number) => {
+    await bookApi.delete(id.toString());
+    await fetch();
+  }, [fetch]);
+
+
   useEffect(() => {
     void fetch();
   }, [fetch]);
 
-  return { books, loading, error, fetch };
+  return { books, loading, error, fetch, onAdd, onEdit, onDelete };
 };
 
 export default useBooks;

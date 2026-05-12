@@ -52,7 +52,7 @@ const CountriesDetailsPage = () => {
               </Typography>
 
               <Typography variant='h4' color='primary.main' sx={{ mb: 3 }}>
-                {countryDetails.continent}
+                {countryDetails.country}
               </Typography>
             </Box>
           </Grid>
