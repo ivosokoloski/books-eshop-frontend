@@ -17,6 +17,7 @@ import type { Book, BookFormData } from "../../../api/types/book";
 import EditBookDialog from "./EditBookDialog";
 import DeleteBookDialog from "./DeleteBookDialog";
 import { useState } from "react";
+import useAuth from "../../../hooks/auth/useAuth.ts";
 
 interface BookCardProps {
   book: Book;
@@ -25,6 +26,11 @@ interface BookCardProps {
 }
 
 const BookCard = ({ book, onEdit, onDelete }: BookCardProps) => {
+     const { user } = useAuth();
+  const isAdmin = user?.roles.includes('ROLE_ADMINISTRATOR') ?? false;
+
+
+
   const navigate = useNavigate();
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string }>({
     open: false,
@@ -81,7 +87,7 @@ const BookCard = ({ book, onEdit, onDelete }: BookCardProps) => {
             Info
           </Button>
           <Box>
-            {
+            {isAdmin && ( 
               <Button
                 startIcon={<EditIcon />}
                 color="warning"
@@ -89,8 +95,8 @@ const BookCard = ({ book, onEdit, onDelete }: BookCardProps) => {
               >
                 Edit
               </Button>
-            }
-            {
+            )}
+            {isAdmin && (
               <Button
                 startIcon={<DeleteIcon />}
                 color="error"
@@ -98,7 +104,7 @@ const BookCard = ({ book, onEdit, onDelete }: BookCardProps) => {
               >
                 Delete
               </Button>
-            }
+            )}
           </Box>
         </CardActions>
       </Card>

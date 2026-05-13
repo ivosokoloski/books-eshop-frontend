@@ -1,62 +1,92 @@
-import './Header.css';
+import "./Header.css";
 import {
-  AppBar, Box, Button, Drawer, IconButton, List, ListItem, ListItemButton, ListItemText, Toolbar, Typography
-} from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import { Link } from 'react-router';
-import { useState } from 'react';
-
+  AppBar,
+  Box,
+  Button,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Toolbar,
+  Typography,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import { Link } from "react-router";
+import { useState } from "react";
+import useAuth from "../../../../hooks/auth/useAuth";
+import AuthToggle from "../../auth/AuthToggle/AuthToggle";
 const pages = [
-  { path: '/', name: 'home' },
-  { path: '/books', name: 'books' },
-  { path: '/authors', name: 'authors' },
-  { path: '/countries', name: 'countries' },
-  { path: '/users', name: 'users' }
+  { path: "/", name: "home", authenticated: false },
+  { path: "/books", name: "books", authenticated: true },
+  { path: "/authors", name: "authors", authenticated: true },
+  { path: "/countries", name: "countries", authenticated: true },
+  { path: "/users", name: "users", authenticated: true },
 ];
 
 const Header = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const { isLoggedIn } = useAuth();
+  const visiblePages = pages.filter(
+    (page) => !page.authenticated || isLoggedIn,
+  );
 
   return (
     <Box>
-      <AppBar position='static'>
-        <Toolbar>
+      <AppBar position="static">
+        <Toolbar sx={{ display: "flex" }}>
           <IconButton
-            size='large'
-            edge='start'
-            color='inherit'
-            aria-label='menu'
-            sx={{ mr: 2, display: { md: 'none' } }}
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2, display: { md: "none" } }}
             onClick={() => setDrawerOpen(true)}
           >
-            <MenuIcon/>
+            <MenuIcon />
           </IconButton>
 
-          <Typography variant='h6' component='div' sx={{ mr: 3 }}>
+          <Typography variant="h6" component="div" sx={{ mr: 3 }}>
             E-SHOP
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+            {visiblePages.map((page) => (
               <Link key={page.name} to={page.path}>
-                <Button sx={{ my: 2, color: 'white', display: 'block' }}>
+                <Button sx={{ my: 2, color: "white", display: "block" }}>
                   {page.name}
                 </Button>
               </Link>
             ))}
           </Box>
 
-          <Button color='inherit' sx={{ ml: 'auto' }}>Login</Button>
+          <Box
+            sx={{ flexGrow: 1, display: "flex", justifyContent: "flex-end" }}
+          >
+            <AuthToggle />
+          </Box>
         </Toolbar>
       </AppBar>
 
-      <Drawer anchor='left' open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <Box sx={{ width: 240 }} role='presentation' onClick={() => setDrawerOpen(false)}>
+      <Drawer
+        anchor="left"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+      >
+        <Box
+          sx={{ width: 240 }}
+          role="presentation"
+          onClick={() => setDrawerOpen(false)}
+        >
           <List>
-            {pages.map((page) => (
+            {visiblePages.map((page) => (
               <ListItem key={page.name} disablePadding>
                 <ListItemButton component={Link} to={page.path}>
-                  <ListItemText primary={page.name} sx={{textTransform: 'capitalize'}}/>
+                  <ListItemText
+                    primary={page.name}
+                    sx={{ textTransform: "capitalize" }}
+                  />
                 </ListItemButton>
               </ListItem>
             ))}

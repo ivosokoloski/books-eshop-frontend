@@ -6,11 +6,13 @@ import { useState } from "react";
 import { Snackbar, Alert, Button } from "@mui/material";
 import BookGrid from "../../components/books/BookGrid";
 import AddBookDialog from "../../components/books/AddBookDialog";
+import useAuth from "../../../hooks/auth/useAuth";
 
 const BooksPage = () => {
+  const { user } = useAuth();
+  const isAdmin = user?.roles.includes("ROLE_ADMINISTRATOR") ?? false;
   const { books, loading, onAdd, onEdit, onDelete } = useBooks();
-  const [addBookDialogOpen, setAddBookDialogOpen] =
-    useState<boolean>(false);
+  const [addBookDialogOpen, setAddBookDialogOpen] = useState<boolean>(false);
 
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string }>({
     open: false,
@@ -29,42 +31,47 @@ const BooksPage = () => {
   };
 
   return (
-     <Box className='products-box'>
+    <Box className="products-box">
       {loading && (
-        <Box className='progress-box'>
-          <CircularProgress/>
+        <Box className="progress-box">
+          <CircularProgress />
         </Box>
       )}
-      {!loading &&
-       <>
-         { (
-           <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
-             <Button variant='contained' color='primary' onClick={() => setAddBookDialogOpen(true)}>
-               Add Book
-             </Button>
-           </Box>
-         )}
-         <BookGrid books={books} onEdit={onEdit} onDelete={onDelete}/>
-         <Snackbar
-           open={snackbar.open}
-           autoHideDuration={3000}
-           onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
-           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-         >
-           <Alert
-             severity='error'
-             onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}>
-             {snackbar.message}
-           </Alert>
-         </Snackbar>
-         <AddBookDialog
-           open={addBookDialogOpen}
-           onClose={() => setAddBookDialogOpen(false)}
-           onAdd={handleAdd}
-         />
-       </>}
+      {!loading && (
+        <>
+          {isAdmin && (
+            <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => setAddBookDialogOpen(true)}
+              >
+                Add Book
+              </Button>
+            </Box>
+          )}
+          <BookGrid books={books} onEdit={onEdit} onDelete={onDelete} />
+          <Snackbar
+            open={snackbar.open}
+            autoHideDuration={3000}
+            onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          >
+            <Alert
+              severity="error"
+              onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+            >
+              {snackbar.message}
+            </Alert>
+          </Snackbar>
+          <AddBookDialog
+            open={addBookDialogOpen}
+            onClose={() => setAddBookDialogOpen(false)}
+            onAdd={handleAdd}
+          />
+        </>
+      )}
     </Box>
-
   );
 };
 

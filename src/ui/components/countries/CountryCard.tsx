@@ -8,6 +8,7 @@ import { useState } from 'react';
 import EditCountryDialog from './EditCountryDialog';
 import DeleteCountryDialog from './DeleteCountryDialog';
 import { Alert, Snackbar } from '@mui/material';
+import useAuth from '../../../hooks/auth/useAuth.ts';
 
 
 interface CountryCardProps {
@@ -17,6 +18,8 @@ interface CountryCardProps {
 }
 
 const CountryCard = ({ country, onEdit, onDelete }: CountryCardProps) => {
+    const { user } = useAuth();
+  const isAdmin = user?.roles.includes('ROLE_ADMINISTRATOR') ?? false;
   const navigate = useNavigate();
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string }>({
       open: false,
@@ -67,7 +70,7 @@ const CountryCard = ({ country, onEdit, onDelete }: CountryCardProps) => {
             Info
           </Button>
           <Box>
-            {
+            {isAdmin && (
               <Button
                 startIcon={<EditIcon />}
                 color="warning"
@@ -75,8 +78,8 @@ const CountryCard = ({ country, onEdit, onDelete }: CountryCardProps) => {
               >   
                 Edit
               </Button>
-            }
-            {
+            )}
+            {isAdmin && (
               <Button
                 startIcon={<DeleteIcon />}
                 color="error"
@@ -84,7 +87,7 @@ const CountryCard = ({ country, onEdit, onDelete }: CountryCardProps) => {
               >
                 Delete
               </Button>
-            }
+            )}
           </Box>
         </CardActions>
       </Card>

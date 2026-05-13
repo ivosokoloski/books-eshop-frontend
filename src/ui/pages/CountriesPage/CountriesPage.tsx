@@ -5,7 +5,10 @@ import { useState } from 'react';
 import { Snackbar, Alert, Button } from '@mui/material';
 import AddCountryDialog from '../../components/countries/AddCountryDialog';
 import type { CountryFormData } from '../../../api/types/country';  
+import useAuth from '../../../hooks/auth/useAuth';
 const CountriesPage = () => {
+    const { user } = useAuth();
+  const isAdmin = user?.roles.includes('ROLE_ADMINISTRATOR') ?? false;
   const { countries, loading, onAdd, onEdit, onDelete } = useCountries();
   const [addCountryDialogOpen, setAddCountryDialogOpen] =
     useState<boolean>(false);
@@ -35,7 +38,7 @@ const CountriesPage = () => {
       )}
       {!loading &&
        <>
-         { (
+         {isAdmin && (
            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
              <Button variant='contained' color='primary' onClick={() => setAddCountryDialogOpen(true)}>
                Add Country

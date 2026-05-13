@@ -5,8 +5,11 @@ import { useState } from 'react';
 import { Snackbar, Alert, Button } from '@mui/material';
 import AddAuthorDialog from '../../components/authors/AddAuthorDialog';
 import type { AuthorFormData } from '../../../api/types/author';
+import useAuth from '../../../hooks/auth/useAuth';
 
 const AuthorsPage = () => {
+    const { user } = useAuth();
+  const isAdmin = user?.roles.includes('ROLE_ADMINISTRATOR') ?? false;
   const { authors, loading,onAdd, onEdit, onDelete  } = useAuthors();
  const [addAuthorDialogOpen, setAddAuthorDialogOpen] =
     useState<boolean>(false);
@@ -36,13 +39,14 @@ const AuthorsPage = () => {
       )}
       {!loading &&
        <>
-         { (
+         { isAdmin && (
            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
              <Button variant='contained' color='primary' onClick={() => setAddAuthorDialogOpen(true)}>
                Add Author
              </Button>
            </Box>
          )}
+        
          <AuthorsGrid authors={authors} onEdit={onEdit} onDelete={onDelete}/>
          <Snackbar
            open={snackbar.open}

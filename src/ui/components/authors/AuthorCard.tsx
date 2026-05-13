@@ -16,6 +16,8 @@ import type { Author, AuthorFormData } from "../../../api/types/author";
 import { useState } from "react";
 import EditAuthorDialog from "./EditAuthorDialog";
 import DeleteAuthorDialog from "./DeleteAuthorDialog";
+import useAuth from "../../../hooks/auth/useAuth.ts";
+
 
 interface AuthorCardProps {
   author: Author;
@@ -24,6 +26,8 @@ interface AuthorCardProps {
 }
 
 const AuthorCard = ({ author, onEdit, onDelete }: AuthorCardProps) => {
+    const { user } = useAuth();
+  const isAdmin = user?.roles.includes('ROLE_ADMINISTRATOR') ?? false;
   const navigate = useNavigate();
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string }>({
     open: false,
@@ -73,7 +77,7 @@ const AuthorCard = ({ author, onEdit, onDelete }: AuthorCardProps) => {
             Info
           </Button>
           <Box>
-            {
+            {isAdmin && ( 
               <Button
                 startIcon={<EditIcon />}
                 color="warning"
@@ -81,8 +85,8 @@ const AuthorCard = ({ author, onEdit, onDelete }: AuthorCardProps) => {
               >
                 Edit
               </Button>
-            }
-            {
+            )}
+            {isAdmin && (
               <Button
                 startIcon={<DeleteIcon />}
                 color="error"
@@ -90,7 +94,7 @@ const AuthorCard = ({ author, onEdit, onDelete }: AuthorCardProps) => {
               >
                 Delete
               </Button>
-            }
+            )}
           </Box>
         </CardActions>
       </Card>
