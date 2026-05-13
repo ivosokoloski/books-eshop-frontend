@@ -1,6 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
-import type { User } from '../../api/types/user';
-import userApi from '../../api/usersApi.ts';    
+import { useState, useEffect, useCallback } from "react";
+import type { User, UserFormData } from "../../api/types/user";
+import userApi from "../../api/userApi.ts";
+
+
 
 const useUsers = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -15,17 +17,35 @@ const useUsers = () => {
       setUsers(response.data);
       setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('An unknown error occurred.'));
+      setError(
+        err instanceof Error ? err : new Error("An unknown error occurred."),
+      );
     } finally {
       setLoading(false);
     }
   }, []);
 
+  const onEdit = useCallback(
+    async (id: number, data: UserFormData) => {
+      await userApi.edit(id.toString(), data);
+      await fetch();
+    },
+    [fetch],
+  );
+
+  const onDelete = useCallback(
+    async (id: number) => {
+      await userApi.delete(id.toString());
+      await fetch();
+    },
+    [fetch],
+  );
+
   useEffect(() => {
     void fetch();
   }, [fetch]);
 
-  return { users, loading, error, fetch };
+  return { users, loading, error, fetch, onEdit, onDelete };
 };
 
 export default useUsers;

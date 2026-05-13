@@ -6,8 +6,8 @@ import useUsersDetails from '../../../hooks/users/useUsersDetails';
 
 const UsersDetailsPage = () => {
   const navigate = useNavigate();
-  const { id } = useParams();
-  const { userDetails } = useUsersDetails(id);
+  const { username } = useParams();
+  const { userDetails } = useUsersDetails(username);
 
   if (!userDetails) {
     return <Box className='progress-box'><CircularProgress/></Box>;

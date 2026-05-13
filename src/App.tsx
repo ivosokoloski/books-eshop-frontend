@@ -31,7 +31,7 @@ function App() {
             <Route path="books/:id" element={<BookDetailsPage />} />
             <Route path="authors/:id" element={<AuthorsDetailsPage />} />
             <Route path="countries/:id" element={<CountriesDetailsPage />} />
-            <Route path="users/:id" element={<UsersDetailsPage />} />
+            <Route path="users/:username" element={<UsersDetailsPage />} />
           </Route>
         </Route>
       </Routes>

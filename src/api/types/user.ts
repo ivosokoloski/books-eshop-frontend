@@ -1,5 +1,6 @@
 
-import { JwtPayload } from 'jwt-decode';
+import type { JwtPayload } from 'jsonwebtoken';
+
 export type Role = 'ROLE_ADMINISTRATOR' | 'ROLE_USER';
 export interface User {
   id: number;
@@ -9,6 +10,11 @@ export interface User {
 }
 export interface UserDetails {
   id: number;
+  name: string;
+  surname: string;
+  email: string;
+}
+export interface UserFormData {
   name: string;
   surname: string;
   email: string;
